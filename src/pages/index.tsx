@@ -37,7 +37,6 @@ const Home = () => {
       setColor(1);
     }
     setBoard(newBoard);
-
     if (checkFinish(newBoard, color)) {
       alert();
     }
