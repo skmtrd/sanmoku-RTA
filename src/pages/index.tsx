@@ -14,7 +14,6 @@ const checkFinish = (board: number[][], color: number) => {
   }
   if (board[0][0] === color && board[1][1] === color && board[2][2] === color) return true;
   if (board[2][0] === color && board[1][1] === color && board[0][2] === color) return true;
-
   return false;
 };
 
