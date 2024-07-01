@@ -1,57 +1,61 @@
+import { useState } from 'react';
 import styles from './index.module.css';
 
+const checkFinish = (board: number[][], color: number) => {
+  const reverseRow: number[][] | null = [[], [], []];
+  for (const row of board) {
+    if (row.every((cell) => cell === color)) return true;
+    for (let i = 0; i < 3; i++) {
+      reverseRow[i].push(row[i]);
+    }
+  }
+  for (const row of reverseRow) {
+    if (row.every((cell) => cell === color)) return true;
+  }
+  if (board[0][0] === color && board[1][1] === color && board[2][2] === color) return true;
+  if (board[2][0] === color && board[1][1] === color && board[0][2] === color) return true;
+
+  return false;
+};
+
 const Home = () => {
+  const [board, setBoard] = useState<number[][]>([
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+  ]);
+
+  const [color, setColor] = useState<number>(1);
+
+  const handleClick = (x: number, y: number) => {
+    const newBoard = structuredClone(board);
+    if (board[y][x] === 1 || board[y][x] === 2) return;
+    if (color === 1) {
+      newBoard[y][x] = 1;
+      setColor(2);
+    } else {
+      newBoard[y][x] = 2;
+      setColor(1);
+    }
+    setBoard(newBoard);
+
+    if (checkFinish(newBoard, color)) {
+      alert();
+    }
+  };
+
   return (
     <div className={styles.container}>
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code} style={{ backgroundColor: '#fafafa' }}>
-            pages/index.js
-          </code>
-        </p>
-
-        <div className={styles.grid}>
-          <a className={styles.card} href="https://nextjs.org/docs">
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a className={styles.card} href="https://nextjs.org/learn">
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a className={styles.card} href="https://github.com/vercel/next.js/tree/master/examples">
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            className={styles.card}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>Instantly deploy your Next.js site to a public URL with Vercel.</p>
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <img src="vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+      <div className={styles.board}>
+        {board.map((row, y) =>
+          row.map((cell, x) => (
+            <div className={styles.cell} key={`${x}-${y}`} onClick={() => handleClick(x, y)}>
+              {cell === 1 && <div className={styles.cellColorBlue} />}
+              {cell === 2 && <div className={styles.cellColorRed} />}
+            </div>
+          )),
+        )}
+      </div>
     </div>
   );
 };
